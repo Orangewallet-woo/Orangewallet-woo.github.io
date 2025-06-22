@@ -1,0 +1,1065 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Woo Wallet</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #44cd8acb;
+    }
+    header{
+        background-color: orange;
+      color: #eaffffe8;
+      padding: 1rem;
+      text-align: center;
+      position: relative;
+    }
+    
+     footer {
+      background-color: blue;
+      color: #eaffffe8;
+      padding: 1rem;
+      text-align: center;
+      position: relative;
+      margin-top:220px;
+    }
+    
+    .container {
+      max-width: 540px;
+      margin: auto;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 25px;
+      margin-top: 30px;
+      border-radius: 18px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 999;
+}
+
+.success-banner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 1000;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.success-icon {
+  color: #2ecc71;
+  font-size: 50px;
+  margin-bottom: 15px;
+}
+
+.success-amount {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 10px 0;
+  color: #333;
+}
+
+.success-message {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      color: #eaffeac4;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s ease;
+      font-weight: bold;
+      background-color: #ff742be8;
+    }
+    button:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+    .hidden {
+      display: none;
+    }
+    .transaction {
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      font-weight: 500;
+      color: #333;
+    }
+    .deposit {
+      background-color: #d1fcd1;
+      border-left: 6px solid #2ecc71;
+    }
+    .withdraw {
+      background-color: #fcd1d1;
+      border-left: 6px solid #e74c3c;
+    }
+    .referral-earn {
+      background-color: #e8f4fc;
+      border-left: 6px solid #3498db;
+    }
+    .notif {
+      background-color: rgba(238, 243, 247, 0.2);
+      border-left: 5px solid #0066cc;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      color: #fff;
+    }
+    /* Deposit Success Banner */
+.deposit-success-banner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 1001;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  display: none;
+}
+
+.deposit-success-banner.show {
+  display: block;
+}
+
+.deposit-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 1000;
+  display: none;
+}
+
+.deposit-overlay.show {
+  display: block;
+}
+/* Splash Screen Styles */
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border:show;
+  background-color: #FF8C00; /* Orange background */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.bouncing-loader {
+  display: flex;
+  justify-content: center;
+}
+
+.bouncing-ball {
+  width: 20px;
+  height: 20px;
+  margin: 0 10px;
+  background-color: white;
+  border-radius: 50%;
+  animation: bounce 0.6s infinite alternate;
+}
+
+.bouncing-ball:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.bouncing-ball:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-30px);
+  }
+}
+
+.woo-text {
+  font-size: 0;
+  color: green;
+  font-weight: bold;
+  letter-spacing: 10px;
+  margin-top: 40px;
+  text-transform: uppercase;
+  animation: fadeIn 1s forwards;
+  animation-delay: 3s;
+  opacity: 0;
+}
+
+.login-prompt {
+  font-size: 0;
+  color: white;
+  margin-top: 50px;
+  animation: fadeIn 1s forwards;
+  animation-delay: 3.5s;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  to {
+    font-size: 24px;
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  display: none;
+  z-index: -1;
+  visibility: hidden;
+  height: 0;
+    width: 0;
+  }
+}
+.success-icon {
+  color: #2ecc71;
+  font-size: 50px;
+  margin-bottom: 15px;
+}
+
+.success-amount {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 15px 0;
+  color: #333;
+}
+
+.back-to-dashboard {
+  background: #2ecc71;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+    .success-banner {
+      background: rgba(212, 237, 218, 0.3);
+      color: lime green;
+      padding: 12px;
+      margin: 15px 0;
+      border: 1px solid rgba(195, 230, 203, 0.3);
+      border-radius: 8px;
+      animation: fadeIn 0.5s ease-in-out;
+      font-weight: bold;
+      text-align: center;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-top: 15px;
+      gap: 10px;
+    }
+    .tabs button {
+      flex: 1 1 45%;
+      color: white;
+      border: none;
+    }
+    .tabs button:hover {
+      opacity: 0.8;
+    }
+    .profile, .faq {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      color: #fff;
+    }
+    .goals, .referral {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      color: #fff;
+    }
+    .icon {
+      margin-right: 8px;
+    }
+    .greeting {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+    #balance {
+      font-weight: bold;
+      font-size:18px;
+      color: #ffc700;
+      
+    }
+    .deposit-btn {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+    }
+    .withdraw-btn {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+    }
+    .save-btn {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+    }
+    .loan-btn {
+      background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    }
+    .referral-btn {
+      background: linear-gradient(135deg, #f39c12, #e67e22);
+    }
+    .goals {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .goals:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    .savings-summary {
+      margin-top: 10px;
+      padding: 10px;
+      background: #ffb355c7;
+      border-radius: 8px;
+      display: none;
+    }
+    .savings-summary p {
+      margin: 5px 0;
+    }
+    a {
+      color: #3498db;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .menu-btn {
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      width: auto;
+    }
+    .menu-content {
+      display: none;
+      position: absolute;
+      right: 20px;
+      top: 50px;
+      background-color: rgba(0, 34, 68, 0.9);
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .menu-content button {
+      color: white;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      text-align: left;
+      background: none;
+      border: none;
+      border-radius: 0;
+      margin: 0;
+      width: 100%;
+    }
+    .menu-content button:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    .show-menu {
+      display: block;
+      animation: fadeIn 0.3s;
+    }
+    .settings-menu {
+      display: none;
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+    }
+    .settings-menu button {
+      margin-top: 5px;
+    }
+    .load-more {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      margin-top: 10px;
+    }
+    .transaction-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .transaction-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .transaction-actions button {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+    .referral-code {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-family: monospace;
+      font-size: 16px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .referral-stats {
+      margin-top: 10px;
+    }
+    .referral-stats p {
+      margin: 5px 0;
+    }
+    .copy-btn {
+      background: #3498db;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+<div id="splashScreen" class="splash-screen">
+  <div class="bouncing-loader">
+    <div class="bouncing-ball"></div>
+    <div class="bouncing-ball"></div>
+    <div class="bouncing-ball"></div>
+  </div>
+  <div id="wooText" class="woo-text"></div>
+  <div id="loginPrompt" class="login-prompt"></div>
+</div>
+  <header>
+    <h1><i class="fas fa-wallet icon"></i>Woo Wallet</h1>
+    <button class="menu-btn" onclick="toggleMenu()"><i class="fas fa-ellipsis-v"></i></button>
+    <div class="menu-content" id="menuContent">
+      <button onclick="toggleSection('profile')"><i class="fas fa-user icon"></i>Profile</button>
+      <button onclick="toggleSection('referral')"><i class="fas fa-users icon"></i>Refer & Earn</button>
+      <button onclick="toggleSection('faq')"><i class="fas fa-question-circle icon"></i>FAQs</button>
+      <button onclick="toggleSettings()"><i class="fas fa-cog icon"></i>Settings</button>
+    </div>
+  </header>  
+  <div class="container" id="auth">
+    <h2>Signup</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <input type="text" id="referralCode" placeholder="Referral Code (Optional)">
+    <button onclick="signup()">Register & Claim 100 Ksh</button>
+    <h3 style="margin-top: 20px;">Already have an account?</h3>
+    <button onclick="showLogin()">Login</button>
+  </div>  
+
+  <div class="container hidden" id="login">
+    <h2>Login</h2>
+    <input type="text" id="loginUser" placeholder="Username">
+    <input type="password" id="loginPass" placeholder="Password">
+    <button onclick="login()">Login</button>
+  </div>  
+
+  <div class="container hidden" id="dashboard">
+    <div class="greeting">Welcome, <span id="displayName"></span>!</div>
+    <!-- Success Banner (add to your dashboard container) -->
+<div id="depositSuccessBanner" class="deposit-success-banner hidden">
+  <i class="fas fa-check-circle success-icon"></i>
+  <div class="success-amount" id="depositSuccessAmount"></div>
+  <button onclick="hideSuccessBanner()" class="back-to-dashboard">
+    Back to Dashboard
+  </button>
+</div>
+
+<!-- Overlay (add at bottom of body) -->
+<div id="depositOverlay" class="deposit-overlay hidden"></div>
+    <p><i class="fas fa-money-bill-wave icon"></i>Wallet Balance: <span id="balance">0</span> Ksh</p>
+    <div class="tabs">
+      <button class="deposit-btn" onclick="deposit()"><i class="fas fa-plus icon"></i>Deposit</button>
+      <button class="withdraw-btn" onclick="initiateWithdraw()"><i class="fas fa-minus icon"></i>Withdraw</button>
+      <button class="save-btn" onclick="save()"><i class="fas fa-piggy-bank icon"></i>Save</button>
+      <button class="loan-btn" onclick="loan()"><i class="fas fa-hand-holding-usd icon"></i>Loan</button>
+      <button class="referral-btn" onclick="toggleSection('referral')"><i class="fas fa-users icon"></i>Refer & Earn</button>
+    </div>
+
+    <div class="success-banner hidden" id="successBanner">Withdrawal Successful!</div>
+    <div id="transactions"></div>
+    <button class="load-more hidden" id="loadMoreBtn" onclick="toggleTransactions()">Load More</button>
+    <div id="notifications"></div>
+
+    <div class="profile hidden" id="profileSection">
+      <h4><i class="fas fa-user icon"></i>Profile</h4>
+      <div class="transaction-row">
+        <p>Username: <span id="profileName"></span></p>
+      </div>
+      <div class="transaction-row">
+        <p>Password: <span id="profilePass">••••••••</span></p>
+        <button onclick="togglePasswordVisibility()"><i class="fas fa-eye"></i></button>
+      </div>
+      <div class="settings-menu" id="settingsMenu">
+        <button class="withdraw-btn" onclick="logout()"><i class="fas fa-sign-out-alt icon"></i>Logout</button>
+        <button class="withdraw-btn" onclick="deleteAccount()"><i class="fas fa-trash icon"></i>Delete Account</button>
+      </div>
+    </div>
+    
+    <div class="goals" onclick="showSavingsSummary()">
+      <h4><i class="fas fa-bullseye icon"></i>Savings Goals</h4>
+      <p id="savingsGoalText">Set a monthly/3-month goal!</p>
+      <div class="savings-summary" id="savingsSummary">
+        <p><strong>Savings Summary:</strong></p>
+        <p id="savingsAmount"></p>
+        <p id="monthlyInterest"></p>
+        <p id="totalSavings"></p>
+      </div>
+    </div>
+    
+    <div class="referral hidden" id="referralSection">
+      <h4><i class="fas fa-users icon"></i>Refer & Earn</h4>
+      <p>Earn <strong>20 Ksh</strong> for every friend who signs up using your referral code!</p>
+      
+      <div class="referral-code" id="userReferralCode" onclick="copyReferralCode()">
+        <span id="referralCodeText"></span>
+        <button class="copy-btn" onclick="copyReferralCode(event)">Copy</button>
+      </div>
+      
+      <div class="referral-stats">
+        <p><strong>Your Referral Stats:</strong></p>
+        <p>Total Referrals: <span id="totalReferrals">0</span></p>
+        <p>Earnings: <span id="referralEarnings">0</span> Ksh</p>
+      </div>
+      
+      <p style="margin-top: 15px;"><strong>How it works:</strong></p>
+      <ol>
+        <li>Share your referral code with friends</li>
+        <li>They sign up and enter your code</li>
+        <li>You get 20 Ksh when they deposit their first 20 Ksh</li>
+        <li>They also get an extra 20 Ksh bonus</li>
+      </ol>
+    </div>
+    
+    <div class="faq hidden" id="faqSection">
+      <h4><i class="fas fa-question-circle icon"></i>FAQs</h4>
+      <ul>
+        <li><b>Who are we?</b> A new mobile wallet launched in Kenya for enhancing saving and faster on-phone money security.</li>
+        <li><b>How do I activate my wallet before withdrawing the registration bonus?</b> By depositing a little amount of 20 Ksh which is withdrawable after account registration.</li>
+        <li><b>How does the referral program work?</b> You earn 20 Ksh for each friend who signs up with your code and makes their first deposit of at least 20 Ksh.</li>
+      </ul>
+    </div>
+    
+    <div class="referral">
+      <h4><i class="fas fa-headset icon"></i>Support</h4>
+      <p>Contact us: <a href="mailto:woodan12@gmail.com">woodan12@gmail.com</a></p>
+    </div>
+    
+    <div class="faq">
+      <h4><i class="fas fa-robot icon"></i>Bot Assistant</h4>
+      <p>Ask: "How to save?" or "How to loan?" anytime.</p>
+    </div>
+  </div>  
+
+  <footer>
+    &copy; 2025 Woo Mobile Wallet
+  </footer>  
+
+  <script>
+      // Splash Screen Animation
+document.addEventListener('DOMContentLoaded', function() {
+  const splashScreen = document.getElementById('splashScreen');
+  const wooText = document.getElementById('wooText');
+  const loginPrompt = document.getElementById('loginPrompt');
+  
+  // After 3 seconds, show W O O text
+  setTimeout(() => {
+    wooText.textContent = 'W O O';
+  }, 3000);
+  
+  // After 3.5 seconds, show login prompt
+  setTimeout(() => {
+    loginPrompt.textContent = 'Login Page Now';
+  }, 3500);
+  
+  // After 5 seconds, hide splash screen
+  setTimeout(() => {
+    splashScreen.style.animation = 'fadeOut 1s forwards';
+    setTimeout(() => {
+      splashScreen.remove();
+    }, 1000);
+  }, 5000);
+});
+    let user = {
+      referrals: 0,
+      referralEarnings: 0,
+      referralCode: null
+    };
+    let transactions = [];
+    let deposited = 0;
+    let savingGoal = null;
+    let savingsData = {
+      amount: 0,
+      duration: '',
+      startDate: null
+    };
+    let showAllTransactions = false;
+
+    function generateReferralCode(username) {
+      // Simple hash function to generate a consistent code from username
+      let hash = 0;
+      for (let i = 0; i < username.length; i++) {
+        hash = (hash << 5) - hash + username.charCodeAt(i);
+        hash = hash & hash; // Convert to 32bit integer
+      }
+      return 'WOO' + Math.abs(hash).toString(36).substring(0, 6).toUpperCase();
+    }
+
+    function signup() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const referralCodeInput = document.getElementById("referralCode").value;
+      
+      if (!username || !password) {
+        alert("Please enter both username and password");
+        return;
+      }
+      
+      user.name = username;
+      user.pass = password;
+      user.balance = 100;
+      user.hasDeposited = false;
+      user.referrals = 0;
+      user.referralEarnings = 0;
+      user.referralCode = generateReferralCode(username);
+      
+      // Check if referral code was provided
+      if (referralCodeInput) {
+        const referredBy = findUserByReferralCode(referralCodeInput);
+        if (referredBy) {
+          user.referredBy = referredBy.name;
+          // Bonus for new user
+          user.balance += 20;
+          transactions.unshift({
+            type: 'deposit',
+            amount: 20,
+            date: new Date(),
+            text: `Referral signup bonus +20 Ksh`
+          });
+        }
+      }
+      
+      localStorage.setItem("wooUser", JSON.stringify(user));
+      alert("Registered successfully! 100 Ksh credited." + (user.referredBy ? " Plus 20 Ksh referral bonus!" : ""));
+      
+      // If this user was referred, update the referrer's account
+      if (user.referredBy) {
+        updateReferrer(user.referredBy);
+      }
+      
+      showLogin();
+    }
+
+    function findUserByReferralCode(code) {
+      // In a real app, this would query a database
+      // For this demo, we'll just check localStorage for any existing user with this code
+      const allUsers = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith("wooUser")) {
+          const storedUser = JSON.parse(localStorage.getItem(key));
+          if (storedUser.referralCode === code) {
+            return storedUser;
+          }
+        }
+      }
+      return null;
+    }
+
+    function updateReferrer(referrerUsername) {
+      // Find the referrer's account and update their stats
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith("wooUser")) {
+          const storedUser = JSON.parse(localStorage.getItem(key));
+          if (storedUser.name === referrerUsername) {
+            storedUser.referrals += 1;
+            // The actual 20 Ksh bonus will be credited when the new user deposits
+            localStorage.setItem(key, JSON.stringify(storedUser));
+            break;
+          }
+        }
+      }
+    }
+
+    function creditReferrer(referrerUsername) {
+      // Credit the referrer with 20 Ksh
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith("wooUser")) {
+          const storedUser = JSON.parse(localStorage.getItem(key));
+          if (storedUser.name === referrerUsername) {
+            storedUser.referralEarnings += 20;
+            storedUser.balance += 20;
+            
+            // Add transaction record
+            if (!storedUser.transactions) storedUser.transactions = [];
+            storedUser.transactions.unshift({
+              type: 'referral',
+              amount: 20,
+              date: new Date(),
+              text: `Referral bonus from ${user.name} +20 Ksh`
+            });
+            
+            localStorage.setItem(key, JSON.stringify(storedUser));
+            break;
+          }
+        }
+      }
+    }
+
+    function showLogin() {
+      document.getElementById("auth").classList.add("hidden");
+      document.getElementById("login").classList.remove("hidden");
+    }
+
+    function login() {
+      let u = document.getElementById("loginUser").value;
+      let p = document.getElementById("loginPass").value;
+      let stored = JSON.parse(localStorage.getItem("wooUser"));
+      if (stored && stored.name === u && stored.pass === p) {
+        user = stored;
+        document.getElementById("login").classList.add("hidden");
+        document.getElementById("dashboard").classList.remove("hidden");
+        document.getElementById("displayName").innerText = user.name;
+        document.getElementById("profileName").innerText = user.name;
+        document.getElementById("balance").innerText = user.balance;
+        
+        // Update referral section
+        if (user.referralCode) {
+          document.getElementById("referralCodeText").innerText = user.referralCode;
+          document.getElementById("totalReferrals").innerText = user.referrals || 0;
+          document.getElementById("referralEarnings").innerText = user.referralEarnings || 0;
+        }
+        
+        updateUI();
+      } else {
+        alert("Wrong credentials");
+      }
+    }
+
+    function deposit() {
+      let amount = prompt("Enter amount to deposit:");
+      if (amount && !isNaN(amount)) {
+        amount = Number(amount);
+        user.balance += amount;
+        deposited += amount;
+        
+        // Check if this is the first deposit (at least 20 Ksh)
+        if (deposited >= 20 && !user.hasDeposited) {
+          user.hasDeposited = true;
+          
+          // If this user was referred, credit the referrer
+          if (user.referredBy) {
+            creditReferrer(user.referredBy);
+            
+            // Add notification about referral bonus
+            transactions.unshift({
+              type: 'deposit',
+              amount: 0,
+              date: new Date(),
+              text: `Your referrer has been credited with 20 Ksh`
+            });
+          }
+        }
+        
+        transactions.unshift({
+          type: 'deposit',
+          amount: amount,
+          date: new Date(),
+          text: `Deposited Ksh ${amount}`
+        });
+        
+        updateUI();
+        localStorage.setItem("wooUser", JSON.stringify(user));
+      }
+    }
+// Global variable to track deposit
+let currentDepositAmount = 0;
+
+function deposit() {
+  const amount = prompt("Enter amount to deposit:");
+  if (amount && !isNaN(amount)) {
+    currentDepositAmount = Number(amount);
+    
+    // Redirect to payment page (REPLACE WITH YOUR PAYMENT LINK)
+    window.location.href = `https://app.payhero.co.ke/lipwa/1180?amount=${amount}`;
+    
+    // Start checking for return (every 1 second)
+    const checkReturn = setInterval(() => {
+      if (window.location.href.indexOf('woowallet.com/dashboard') > -1) {
+        clearInterval(checkReturn);
+        setTimeout(showDepositSuccess, 20000); // Show after 20 seconds
+      }
+    }, 1000);
+  }
+}
+
+function showDepositSuccess() {
+  // Show overlay and banner
+  document.getElementById('depositOverlay').classList.add('show');
+  const banner = document.getElementById('depositSuccessBanner');
+  document.getElementById('depositSuccessAmount').textContent = 
+    `${currentDepositAmount} Ksh Deposited`;
+  banner.classList.add('show');
+  
+  // Update wallet balance
+  updateWalletBalance(currentDepositAmount);
+}
+
+function hideSuccessBanner() {
+  document.getElementById('depositOverlay').classList.remove('show');
+  document.getElementById('depositSuccessBanner').classList.remove('show');
+  updateUI(); // Refresh dashboard
+}
+
+function updateWalletBalance(amount) {
+  const users = JSON.parse(localStorage.getItem('wooUsers')) || [];
+  const userIndex = users.findIndex(u => u.name === user.name);
+  
+  if (userIndex !== -1) {
+    users[userIndex].balance += amount;
+    users[userIndex].transactions.unshift({
+      type: 'deposit',
+      amount: amount,
+      date: new Date(),
+      text: `Deposited ${amount} Ksh`
+    });
+    localStorage.setItem('wooUsers', JSON.stringify(users));
+    user = users[userIndex];
+  }
+}
+    function initiateWithdraw() {
+      if (!user.hasDeposited || deposited < 20) return alert("You must deposit at least 20 Ksh before withdrawing.");
+      let mpesa = prompt("Enter M-Pesa number to send to:");
+      let amount = prompt("Enter amount to withdraw:");
+      if (amount && !isNaN(amount) && Number(amount) <= user.balance) {
+        let record = {
+          type: 'withdraw',
+          amount: Number(amount),
+          mpesa: mpesa,
+          date: new Date(),
+          text: `Withdrawal to ${mpesa} Ksh ${amount} (Pending...)`,
+          status: 'pending'
+        };
+        transactions.unshift(record);
+        updateUI();
+        setTimeout(() => {
+          user.balance -= Number(amount);
+          record.status = 'success';
+          record.text = `Withdrawal to ${mpesa} Ksh ${amount} (Success)`;
+          document.getElementById("successBanner").classList.remove("hidden");
+          updateUI();
+          localStorage.setItem("wooUser", JSON.stringify(user));
+          setTimeout(() => document.getElementById("successBanner").classList.add("hidden"), 3000);
+        }, 10000);
+      }
+    }
+
+  
+    function save() {
+      let goal = prompt("Enter saving goal duration (e.g., 1 month, 3 months):");
+      let amount = prompt("Enter amount to save from balance:");
+      if (amount && !isNaN(amount) && Number(amount) <= user.balance) {
+        user.balance -= Number(amount);
+        savingGoal = `${amount} Ksh saved for ${goal}`;
+        savingsData.amount = Number(amount);
+        savingsData.duration = goal;
+        savingsData.startDate = new Date();
+        document.getElementById("savingsGoalText").innerText = savingGoal;
+        transactions.unshift({
+          type: 'deposit',
+          amount: amount,
+          date: new Date(),
+          text: `Saved Ksh ${amount} for ${goal}`
+        });
+        updateUI();
+        localStorage.setItem("wooUser", JSON.stringify(user));
+      }
+    }
+
+    function showSavingsSummary() {
+      const summary = document.getElementById("savingsSummary");
+      if (savingsData.amount > 0) {
+        const months = savingsData.duration.includes('3') ? 3 : 1;
+        const monthlyInterest = savingsData.amount * 0.10; // 10% interest
+        const totalInterest = monthlyInterest * months;
+        const totalSavings = savingsData.amount + totalInterest;
+        
+        document.getElementById("savingsAmount").innerText = `Amount Saved: Ksh ${savingsData.amount}`;
+        document.getElementById("monthlyInterest").innerText = `Monthly Interest (10%): Ksh ${monthlyInterest.toFixed(2)}`;
+        document.getElementById("totalSavings").innerText = `Total after ${months} month(s): Ksh ${totalSavings.toFixed(2)}`;
+        
+        if (summary.style.display === 'block') {
+          summary.style.display = 'none';
+        } else {
+          summary.style.display = 'block';
+        }
+      } else {
+        alert("You haven't set any savings goal yet!");
+      }
+    }
+
+    function loan() {
+      alert("Loan feature coming soon!");
+    }
+
+    function updateUI() {
+      document.getElementById("balance").innerText = user.balance;
+      
+      // Display transactions (limited to 4 if not showing all)
+      let transactionsToShow = showAllTransactions ? transactions : transactions.slice(0, 4);
+      let transactionsHTML = transactionsToShow.map(t => 
+        `<div class='transaction ${t.type}'>${t.text}</div>`
+      ).join('');
+      
+      document.getElementById("transactions").innerHTML = transactionsHTML;
+      
+      // Show/hide load more button
+      const loadMoreBtn = document.getElementById("loadMoreBtn");
+      if (transactions.length > 4) {
+        loadMoreBtn.classList.remove("hidden");
+        loadMoreBtn.innerText = showAllTransactions ? "Show Less" : "Load More";
+      } else {
+        loadMoreBtn.classList.add("hidden");
+      }
+      
+      if (transactions.length > 0) {
+        document.getElementById("notifications").innerHTML = `<div class='notif'>Last action: ${transactions[0].text}</div>`;
+      }
+    }
+
+    function copyReferralCode(event) {
+      if (event) event.stopPropagation();
+      const code = user.referralCode;
+      navigator.clipboard.writeText(code).then(() => {
+        alert("Referral code copied to clipboard: " + code);
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+        // Fallback for browsers that don't support clipboard API
+        const textarea = document.createElement('textarea');
+        textarea.value = code;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        alert("Referral code copied: " + code);
+      });
+    }
+
+    function toggleTransactions() {
+      showAllTransactions = !showAllTransactions;
+      updateUI();
+    }
+
+    function toggleMenu() {
+      document.getElementById("menuContent").classList.toggle("show-menu");
+    }
+
+    function toggleSection(sectionId) {
+      document.getElementById(`${sectionId}Section`).classList.toggle("hidden");
+      document.getElementById("menuContent").classList.remove("show-menu");
+    }
+
+    function toggleSettings() {
+      document.getElementById("settingsMenu").style.display = 
+        document.getElementById("settingsMenu").style.display === 'block' ? 'none' : 'block';
+      document.getElementById("menuContent").classList.remove("show-menu");
+    }
+
+    function togglePasswordVisibility() {
+      const passElement = document.getElementById("profilePass");
+      if (passElement.innerText === '••••••••') {
+        passElement.innerText = user.pass;
+      } else {
+        passElement.innerText = '••••••••';
+      }
+    }
+
+    function logout() {
+      document.getElementById("dashboard").classList.add("hidden");
+      document.getElementById("login").classList.remove("hidden");
+      document.getElementById("profileSection").classList.add("hidden");
+      document.getElementById("faqSection").classList.add("hidden");
+      document.getElementById("referralSection").classList.add("hidden");
+      document.getElementById("settingsMenu").style.display = 'none';
+    }
+
+    function deleteAccount() {
+      if (confirm("Are you sure you want to delete your account? This cannot be undone.")) {
+        localStorage.removeItem("wooUser");
+        document.getElementById("dashboard").classList.add("hidden");
+        document.getElementById("auth").classList.remove("hidden");
+        alert("Account deleted successfully.");
+      }
+    }
+
+    // Close menu when clicking outside
+    window.onclick = function(event) {
+      if (!event.target.matches('.menu-btn')) {
+        const menuContent = document.getElementById("menuContent");
+        if (menuContent.classList.contains('show-menu')) {
+          menuContent.classList.remove('show-menu');
+        }
+      }
+    }
+    
+
+  </script>
+</body>
+</html>    
